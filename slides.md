@@ -77,6 +77,19 @@ $f: \mathbb{N} \to \mathbb{N},\; f(n) \mapsto \begin{cases} 1 & n < 2 \\ f(n - 1
 ```
 \normalsize
 
+## Charakteristik
+
+Größe der Objektdateien
+
+| Algorithmus | `-g`     | `-O3`    |
+|-------------|---------:|---------:|
+| Iterativ    |   3,6K   | 1,3K     |
+| Iterativ C  |   4,2K   | 1,7K     |
+| Rekursiv    |   3,5K   | 2,1K     |
+| Rekursiv C  |   4,5K   | 1,4K     |
+| Rekursiv T  |   3,8K   | 2,9K     |
+| Rekursiv U  |   3,6K   | 1,3K     |
+
 ## Performance
 
 - Vergleichen der Performance
@@ -105,6 +118,7 @@ $f: \mathbb{N} \to \mathbb{N},\; f(n) \mapsto \begin{cases} 1 & n < 2 \\ f(n - 1
 ## Warum ist `-O3` schneller als `-O0`?
 
 - Variablen werden in Register gehalten (anstatt auf dem Stack)
+    - Weniger Hauptspeicherzugriffe
 
 ## Debug Build (Iterativ)
 \footnotesize
@@ -139,6 +153,7 @@ $f: \mathbb{N} \to \mathbb{N},\; f(n) \mapsto \begin{cases} 1 & n < 2 \\ f(n - 1
 
 - Tritt massiv auf
     - vor allem in optimieten Versionen (da weniger Speicherzugriffe)
+    <!-- TODO: graphische Pipeline! -->
 
 ## Superskalares Pipelining
 
