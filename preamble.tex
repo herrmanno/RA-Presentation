@@ -1,0 +1,22 @@
+\usepackage{listings}
+\setbeamercovered{transparent}
+\setbeamertemplate{footline}[frame number]
+
+%\setbeamertemplate{page in head/foot}[framenumber]
+%\setbeamertemplate{page number in head/foot}[framenumber]
+\definecolor{capri}{rgb}{0.1, 0.5, 0.8}
+\usetheme{Boadilla}
+\useinnertheme{circles}
+\usecolortheme[named=capri]{structure}
+
+\defbeamertemplate{section page}{mine}[1][]{%
+  \begin{centering}
+    {\usebeamerfont{section name}\usebeamercolor[fg]{section name}#1}
+    \vskip1em\par
+    \begin{beamercolorbox}[sep=12pt,center]{part title}
+      \usebeamerfont{section title}\insertsection\par
+    \end{beamercolorbox}
+  \end{centering}
+}
+
+\setbeamertemplate{section page}[mine]
