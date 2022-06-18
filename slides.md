@@ -5,17 +5,16 @@ institute: "HTWK Leipzig"
 documentclass: beamer
 classoption:
   - handout
-#date: "07.01.2022"
+#date: "07.07.2022"
 #theme: "Frankfurt"
 #section-titles: true
 ---
 
 # Algorithmus
 
-- [Fibonacci Folge](https://de.wikipedia.org/wiki/Fibonacci-Folge)
-    - 1,1,2,3,5,8,13,...
+- [Fibonacci Folge](https://de.wikipedia.org/wiki/Fibonacci-Folge): $1,1,2,3,5,8,13,\ldots$
 
-$f: \mathbb{N} \to \mathbb{N},\; f(n) \mapsto \begin{cases} 1 & n < 2 \\ f(n - 1) + f(n - 2) & sonst\end{cases}$
+- $f: \mathbb{N} \to \mathbb{N},\; f(n) \mapsto \begin{cases} 1 & n < 2 \\ f(n - 1) + f(n - 2) & sonst\end{cases}$
 
 - Laufzeit: $\mathcal{O}(2^n)$
 
@@ -33,7 +32,7 @@ $f: \mathbb{N} \to \mathbb{N},\; f(n) \mapsto \begin{cases} 1 & n < 2 \\ f(n - 1
     - ohne Caching
     - mit Caching
     - Tailrecursive
-    - Tailrecursive + Loop unrolling
+- Loop unrolling
 
 ## Iterativ
 
@@ -70,7 +69,7 @@ $f: \mathbb{N} \to \mathbb{N},\; f(n) \mapsto \begin{cases} 1 & n < 2 \\ f(n - 1
 ```
 \normalsize
 
-## Rekursiv (Tailrecursion + Loop unrolling)
+## Loop unrolling
 
 \footnotesize
 ```{.c include=../Algorithm/fib_unroll.c startLine=4 endLine=100}
@@ -132,7 +131,7 @@ Größe der Objektdateien
 ```
 \normalsize
 
-## Warum die Cache Variante langsamer?
+## Warum ist die Cache Variante langsamer?
 
 - Load/Store Befehle sind langsam(er)
 - Algorithmus ist komplexer (mehr Befehle)
@@ -143,26 +142,84 @@ Größe der Objektdateien
 ```
 \normalsize
 
+# Vergleich Iterativ mit Cache $\leftrightarrow$ Iterativ ohne Cache
+Cache Variante hat:
+    - mehr context-siwtches (malloc, free)
+    - mehr page faults (weil Daten aus dem RAM gelesen werden)
+    - mehr Zyklen (durch Schreib-/ Lesevorgänge
+    - mehr Instructions
+
 ## Perf stat (Iterativ mit Cache)
 \footnotesize
 ```{include=../Algorithm/build/release/fib_iterative_cache_1000000000.stat startLine=5 endLine=20 dedent=4}
 ```
 \normalsize
 
+## Perf stat (Tailrecursion)
+\footnotesize
+```{include=../Algorithm/build/release/fib_tailrec_1000000000.stat startLine=5 endLine=20 dedent=4}
+```
+\normalsize
+
+# Vergleich Tailrecursion $\leftrightarrow$ Iterativ
+
+Tailrec hat im Vergleich zu Iterative ähnliche:
+    - Laufzeit
+    - Context-Switches
+    - Page-Faults
+    - Zyklen
+    - Instructions
+    - Branches
+
+$\rightarrow$ Compiler macht 'den selben' Code daraus
+
+## Perf stat (Loop unrolling)
+\footnotesize
+```{include=../Algorithm/build/release/fib_unroll_1000000000.stat startLine=5 endLine=20 dedent=4}
+```
+\normalsize
+
+# Vergleich Loop unrolling $\leftrightarrow$ Tailrecursion / Iterativ
+Loop unrolling hat im Vergleich zu Tailrecursion / Iterative:
+    - bessere Laufzeit
+    - weniger Context-Switches
+    - weniger Zyklen (1/6)
+    - weniger Instructions (1/2)
+    - weniger Branches(!) (1/2)
+    - weniger Branch-Misses (1/4)
+
+$\rightarrow$ ``Weniger Sprünge und mehr Rechenoperationen sind gut''
+
 # Pipelining
 
 - Tritt massiv auf
-    - vor allem in optimieten Versionen (da weniger Speicherzugriffe)
+    - vor allem in optimierten Versionen (da weniger Speicherzugriffe)
     <!-- TODO: graphische Pipeline! -->
+
+## Iterative (Cache) `-g`
+
+![](./iterative_cache_debug.png)
+
+## Tailrecursion `-03`
+
+![](./tailrec_release.png)
 
 ## Superskalares Pipelining
 
 - kann bei Iterationsschritt (`a = b, b = b + a, n += 1`) genutzt werden
+    - Berechnungen können parallel stattfinden, wenn mehrere ALUs vorhanden sind
 
 # Caching
 
 - für alle Versionen relevant, die Caches oder Stackvariablen benutzen
-- *Rückwärtsdurchlaufen* des Caches ungünstig
+- *Rückwärtsdurchlaufen* des Caches ungünstig (Rekurive Variante mit Cache)
+
+
+###
+\footnotesize
+```{.c include=../Algorithm/fib_rec_cache.c startLine=21 endLine=26}
+```
+\normalsize
 
 # Parallelität
 
@@ -170,3 +227,13 @@ Größe der Objektdateien
     - bei Nutzung von Cache drohen Data-Races
     - bei Tailrecursion gibt es nur einen Pfad / keine Option zur Parallelisierung
     - (bei simpler rekursiver Variante theoretisch nutzbar)
+
+# Fazit
+
+- Fibonacci kann effektiv implementiert und ausgeführt werden
+- Rechenlastige Algorithmus $\rightarrow$ effektiv ausführbar
+- Explizites Caching nicht immer optimal
+
+# Hyperlinks
+
+Repository: https://github.com/herrmanno/C827-rechnerarchitektur
