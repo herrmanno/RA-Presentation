@@ -1,6 +1,7 @@
 .ONESHELL:
 all:
 	pandoc \
+	  -f markdown+implicit_figures \
 	  --filter pandoc-include-code \
 	  -t beamer \
 	  --toc \
