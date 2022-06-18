@@ -2,10 +2,13 @@
 title: "Rechnerarchitektur"
 author: "Oliver Herrmann"
 institute: "HTWK Leipzig"
+date: "07.07.2022"
 documentclass: beamer
 classoption:
   - handout
-#date: "07.07.2022"
+output:
+  beamer_presentation:
+    classoption: "aspectratio=169"
 #theme: "Frankfurt"
 #section-titles: true
 ---
@@ -37,42 +40,42 @@ classoption:
 ## Iterativ
 
 \footnotesize
-```{.c include=../Algorithm/fib_iterative.c startLine=4 endLine=100}
+```{.c include=../src/fib_iterative.c startLine=4 endLine=100}
 ```
 \normalsize
 
 ## Iterativ (Cache)
 
 \footnotesize
-```{.c include=../Algorithm/fib_iterative_cache.c startLine=4 endLine=100}
+```{.c include=../src/fib_iterative_cache.c startLine=4 endLine=100}
 ```
 \normalsize
 
 ## Rekursiv
 
 \footnotesize
-```{.c include=../Algorithm/fib_rec.c startLine=3 endLine=100}
+```{.c include=../src/fib_rec.c startLine=3 endLine=100}
 ```
 \normalsize
 
 ## Rekursiv (Cache)
 
 \footnotesize
-```{.c include=../Algorithm/fib_rec_cache.c startLine=6 endLine=100}
+```{.c include=../src/fib_rec_cache.c startLine=6 endLine=100}
 ```
 \normalsize
 
 ## Rekursiv (Tailrecursion)
 
 \footnotesize
-```{.c include=../Algorithm/fib_tailrec.c startLine=4 endLine=100}
+```{.c include=../src/fib_tailrec.c startLine=4 endLine=100}
 ```
 \normalsize
 
 ## Loop unrolling
 
 \footnotesize
-```{.c include=../Algorithm/fib_unroll.c startLine=4 endLine=100}
+```{.c include=../src/fib_unroll.c startLine=4 endLine=100}
 ```
 \normalsize
 
@@ -121,13 +124,13 @@ Größe der Objektdateien
 
 ## Debug Build (Iterativ)
 \footnotesize
-```{include=../Algorithm/build/debug/fib_iterative.objdump startLine=10 endLine=20 dedent=8}
+```{include=../build/debug/fib_iterative.objdump startLine=10 endLine=20 dedent=8}
 ```
 \normalsize
 
 ## Release Build (Iterativ)
 \footnotesize
-```{include=../Algorithm/build/release/fib_iterative.objdump startLine=9 endLine=23 dedent=8}
+```{include=../build/release/fib_iterative.objdump startLine=9 endLine=23 dedent=8}
 ```
 \normalsize
 
@@ -138,55 +141,63 @@ Größe der Objektdateien
 
 ## Perf stat (Iterativ ohne Cache)
 \footnotesize
-```{include=../Algorithm/build/release/fib_iterative_1000000000.stat startLine=5 endLine=20 dedent=4}
+```{include=../build/release/fib_iterative_1000000000.stat startLine=5 endLine=20 dedent=4}
 ```
 \normalsize
-
-# Vergleich Iterativ mit Cache $\leftrightarrow$ Iterativ ohne Cache
-Cache Variante hat:
-    - mehr context-siwtches (malloc, free)
-    - mehr page faults (weil Daten aus dem RAM gelesen werden)
-    - mehr Zyklen (durch Schreib-/ Lesevorgänge
-    - mehr Instructions
 
 ## Perf stat (Iterativ mit Cache)
 \footnotesize
-```{include=../Algorithm/build/release/fib_iterative_cache_1000000000.stat startLine=5 endLine=20 dedent=4}
+```{include=../build/release/fib_iterative_cache_1000000000.stat startLine=5 endLine=20 dedent=4}
 ```
 \normalsize
+
+## Vergleich Iterativ mit Cache $\leftrightarrow$ Iterativ ohne Cache
+Cache Variante hat:
+
+- mehr context-siwtches (malloc, free)
+- mehr page faults (weil Daten aus dem RAM gelesen werden)
+- mehr Zyklen (durch Schreib-/ Lesevorgänge)
+- mehr Instructions
 
 ## Perf stat (Tailrecursion)
 \footnotesize
-```{include=../Algorithm/build/release/fib_tailrec_1000000000.stat startLine=5 endLine=20 dedent=4}
+```{include=../build/release/fib_tailrec_1000000000.stat startLine=5 endLine=20 dedent=4}
 ```
 \normalsize
 
-# Vergleich Tailrecursion $\leftrightarrow$ Iterativ
+## Vergleich Tailrecursion $\leftrightarrow$ Iterativ
 
 Tailrec hat im Vergleich zu Iterative ähnliche:
-    - Laufzeit
-    - Context-Switches
-    - Page-Faults
-    - Zyklen
-    - Instructions
-    - Branches
+
+- Laufzeit
+- Context-Switches
+- Page-Faults
+- Zyklen
+- Instructions
+- Branches
 
 $\rightarrow$ Compiler macht 'den selben' Code daraus
 
+###
+``To iterate is human, to recurse is divine''
+
+\hfill - L Peter Deutsch
+
 ## Perf stat (Loop unrolling)
 \footnotesize
-```{include=../Algorithm/build/release/fib_unroll_1000000000.stat startLine=5 endLine=20 dedent=4}
+```{include=../build/release/fib_unroll_1000000000.stat startLine=5 endLine=20 dedent=4}
 ```
 \normalsize
 
-# Vergleich Loop unrolling $\leftrightarrow$ Tailrecursion / Iterativ
+## Vergleich Loop unrolling $\leftrightarrow$ Tailrecursion / Iterativ
 Loop unrolling hat im Vergleich zu Tailrecursion / Iterative:
-    - bessere Laufzeit
-    - weniger Context-Switches
-    - weniger Zyklen (1/6)
-    - weniger Instructions (1/2)
-    - weniger Branches(!) (1/2)
-    - weniger Branch-Misses (1/4)
+
+- bessere Laufzeit
+- weniger Context-Switches
+- weniger Zyklen (1/6)
+- weniger Instructions (1/2)
+- weniger Branches(!) (1/2)
+- weniger Branch-Misses (1/4)
 
 $\rightarrow$ ``Weniger Sprünge und mehr Rechenoperationen sind gut''
 
@@ -194,7 +205,6 @@ $\rightarrow$ ``Weniger Sprünge und mehr Rechenoperationen sind gut''
 
 - Tritt massiv auf
     - vor allem in optimierten Versionen (da weniger Speicherzugriffe)
-    <!-- TODO: graphische Pipeline! -->
 
 ## Iterative (Cache) `-g`
 
@@ -211,13 +221,14 @@ $\rightarrow$ ``Weniger Sprünge und mehr Rechenoperationen sind gut''
 
 # Caching
 
-- für alle Versionen relevant, die Caches oder Stackvariablen benutzen
+- für alle Versionen relevant, besonders bei
+    - Verwendung von explizitem Caches
+    - Nutzung von Stackvariablen
 - *Rückwärtsdurchlaufen* des Caches ungünstig (Rekurive Variante mit Cache)
-
 
 ###
 \footnotesize
-```{.c include=../Algorithm/fib_rec_cache.c startLine=21 endLine=26}
+```{.c include=../src/fib_rec_cache.c startLine=21 endLine=26}
 ```
 \normalsize
 
@@ -225,7 +236,7 @@ $\rightarrow$ ``Weniger Sprünge und mehr Rechenoperationen sind gut''
 
 - nicht effektiv nutzbar zur berechnung einer *einzelnen* Fibonacci Zahl
     - bei Nutzung von Cache drohen Data-Races
-    - bei Tailrecursion gibt es nur einen Pfad / keine Option zur Parallelisierung
+    - bei Iteration / Tailrecursion gibt es nur einen Pfad $\rightarrow$ keine Option zur Parallelisierung
     - (bei simpler rekursiver Variante theoretisch nutzbar)
 
 # Fazit
@@ -234,6 +245,11 @@ $\rightarrow$ ``Weniger Sprünge und mehr Rechenoperationen sind gut''
 - Rechenlastige Algorithmus $\rightarrow$ effektiv ausführbar
 - Explizites Caching nicht immer optimal
 
-# Hyperlinks
+## Hyperlinks
 
 Repository: https://github.com/herrmanno/C827-rechnerarchitektur
+
+\begin{center}
+%![qr-code to repository](./qr-code.png) { .center width=400 }
+\includegraphics[width=0.5\textwidth]{./qr-code.png}
+\end{center}
