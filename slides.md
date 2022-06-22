@@ -21,11 +21,6 @@ output:
 
 - Laufzeit: $\mathcal{O}(2^n)$
 
-# Performance
-
-- Laufzeitbetrachtung unterschiedlicher Varianten
-    - hängt von Implementierung ab (bei gleicher Spezifikation)
-
 ## Varianten
 
 - Iterativ
@@ -79,22 +74,26 @@ output:
 ```
 \normalsize
 
+# Analyse
+
 ## Charakteristik
 
 Größe der Objektdateien
 
-| Algorithmus | `-g`     | `-O3`    |
+| Algorithmus | `-g -O0` | `-g -O3` |
 |-------------|---------:|---------:|
-| Iterativ    |   3,6K   | 1,3K     |
-| Iterativ C  |   4,2K   | 1,7K     |
-| Rekursiv    |   3,5K   | 2,1K     |
-| Rekursiv C  |   4,5K   | 1,4K     |
-| Rekursiv T  |   3,8K   | 2,9K     |
-| Rekursiv U  |   3,6K   | 1,3K     |
+| Iterativ    |   3,5K   | 4,2K     |
+| Iterativ C  |   4,2K   | 5,4K     |
+| Rekursiv    |   3,4K   | 7,3K     |
+| Rekursiv C  |   4,5K   |  12K     |
+| Rekursiv T  |   3,8K   | 4,6K     |
+| Rekursiv U  |   3,6K   | 4,2K     |
 
 ## Performance
 
 - Vergleichen der Performance
+    - Vergleich der Implementierungen
+    - Vergleich der Builds
 - Erklären der Ursachen
 
 ## Laufzeit Maschine
@@ -108,14 +107,15 @@ Größe der Objektdateien
 
 ## Laufzeit Werte
 
-| Algorithmus | $n = 30$ | $n=10^4$ | $n=10^9$ | `-O3` $n=10^9$ |
-|-------------|---------:|----------|---------:|---------------:|
-| Iterativ    |   2,4ms  | 3,4ms    |   6,8s   | 1,72s          |
-| Iterativ C  |   3,4ms  | 3,7ms    |   18s    | 7,436s         |
-| Rekursiv    |   20ms   | -        |   -      | -              |
-| Rekursiv C  |   1,5ms  | 4,7ms    |   -      | -              |
-| Rekursiv T  |   1,5ms  | 4,4ms    |   -      | 1,74s          |
-| Rekursiv U  |   3,4ms  | 3,2ms    |   2,3s   | 0,56s          |
+| Algorithmus | `-O0` $n = 30$ | `-O0` $n=10^4$ | `-O0` $n=10^9$ | `-O3` $n=10^9$ |
+|-------------|---------------:|---------------:|---------------:|---------------:|
+| Iterativ    |   2,9ms        | 3,0ms          |   6,9s         | 1,85s          |
+| Iterativ C  |   2,1ms        | 3,3ms          |   18s          | 7,62s          |
+| Rekursiv    |   12ms         | -              |   -            | -              |
+| Rekursiv C  |   2,6ms        | 4,3ms          |   -            | -              |
+| Rekursiv T  |   2,8ms        | 4,1ms          |   -            | 1,91s          |
+| Rekursiv U  |   2,8ms        | 2,9ms          |   2,3s         | 0,69s          |
+
 
 ## Warum ist `-O3` schneller als `-O0`?
 
@@ -154,9 +154,9 @@ Größe der Objektdateien
 ## Vergleich Iterativ mit Cache $\leftrightarrow$ Iterativ ohne Cache
 Cache Variante hat:
 
-- mehr context-siwtches (malloc, free)
-- mehr page faults (weil Daten aus dem RAM gelesen werden)
-- mehr Zyklen (durch Schreib-/ Lesevorgänge)
+- mehr Context-Switches (malloc, free)
+- mehr Page Faults (weil Daten aus dem RAM gelesen werden)
+- mehr Zyklen (mehr langsame Schreib-/ Leseoperationen)
 - mehr Instructions
 
 ## Perf stat (Tailrecursion)
@@ -194,10 +194,10 @@ Loop unrolling hat im Vergleich zu Tailrecursion / Iterative:
 
 - bessere Laufzeit
 - weniger Context-Switches
-- weniger Zyklen (1/6)
-- weniger Instructions (1/2)
-- weniger Branches(!) (1/2)
-- weniger Branch-Misses (1/4)
+- weniger Zyklen
+- weniger Instructions
+- weniger Branches(!)
+- weniger Branch-Misses
 
 $\rightarrow$ ``Weniger Sprünge und mehr Rechenoperationen sind gut''
 
@@ -224,7 +224,7 @@ $\rightarrow$ ``Weniger Sprünge und mehr Rechenoperationen sind gut''
 - für alle Versionen relevant, besonders bei
     - Verwendung von explizitem Caches
     - Nutzung von Stackvariablen
-- *Rückwärtsdurchlaufen* des Caches ungünstig (Rekurive Variante mit Cache)
+- *Springendes* des Caches ungünstig (Rekurive Variante mit Cache)
 
 ###
 \footnotesize
