@@ -23,28 +23,14 @@ output:
 
 ## Varianten
 
-- Iterativ
-    - ohne Caching
-    - mit Caching
 - Rekursiv
     - ohne Caching
     - mit Caching
     - Tailrecursive
+- Iterativ
+    - ohne Caching
+    - mit Caching
 - Loop unrolling
-
-## Iterativ
-
-\footnotesize
-```{.c include=../src/fib_iterative.c startLine=4 endLine=100}
-```
-\normalsize
-
-## Iterativ (Cache)
-
-\footnotesize
-```{.c include=../src/fib_iterative_cache.c startLine=4 endLine=100}
-```
-\normalsize
 
 ## Rekursiv
 
@@ -64,6 +50,20 @@ output:
 
 \footnotesize
 ```{.c include=../src/fib_tailrec.c startLine=4 endLine=100}
+```
+\normalsize
+
+## Iterativ
+
+\footnotesize
+```{.c include=../src/fib_iterative.c startLine=4 endLine=100}
+```
+\normalsize
+
+## Iterativ (Cache)
+
+\footnotesize
+```{.c include=../src/fib_iterative_cache.c startLine=4 endLine=100}
 ```
 \normalsize
 
@@ -87,7 +87,7 @@ Größe der Objektdateien
 | Rekursiv    |   3,4K   | 7,3K     |
 | Rekursiv C  |   4,5K   |  12K     |
 | Rekursiv T  |   3,8K   | 4,6K     |
-| Rekursiv U  |   3,6K   | 4,2K     |
+| Loop unroll |   3,6K   | 4,2K     |
 
 ## Performance
 
@@ -114,7 +114,7 @@ Größe der Objektdateien
 | Rekursiv    |   12ms         | -              |   -            | -              |
 | Rekursiv C  |   2,6ms        | 4,3ms          |   -            | -              |
 | Rekursiv T  |   2,8ms        | 4,1ms          |   -            | 1,91s          |
-| Rekursiv U  |   2,8ms        | 2,9ms          |   2,3s         | 0,69s          |
+| Loop unroll |   2,8ms        | 2,9ms          |   2,3s         | 0,69s          |
 
 
 ## Warum ist `-O3` schneller als `-O0`?
@@ -122,13 +122,13 @@ Größe der Objektdateien
 - Variablen werden in Register gehalten (anstatt auf dem Stack)
     - Weniger Hauptspeicherzugriffe
 
-## Debug Build (Iterativ)
+## `-O0` Build (Iterativ)
 \footnotesize
 ```{include=../build/debug/fib_iterative.objdump startLine=10 endLine=20 dedent=8}
 ```
 \normalsize
 
-## Release Build (Iterativ)
+## `-O3` Build (Iterativ)
 \footnotesize
 ```{include=../build/release/fib_iterative.objdump startLine=9 endLine=23 dedent=8}
 ```
@@ -203,7 +203,7 @@ $\rightarrow$ ``Weniger Sprünge und mehr Rechenoperationen sind gut''
 
 # Pipelining
 
-- Tritt massiv auf
+- Effizient nutzbar
     - vor allem in optimierten Versionen (da weniger Speicherzugriffe)
 
 ## Iterative (Cache) `-g`
@@ -221,10 +221,10 @@ $\rightarrow$ ``Weniger Sprünge und mehr Rechenoperationen sind gut''
 
 # Caching
 
-- für alle Versionen relevant, besonders bei
-    - Verwendung von explizitem Caches
+- für alle Versionen relevant bei
     - Nutzung von Stackvariablen
-- *Springendes* des Caches ungünstig (Rekurive Variante mit Cache)
+    - Verwendung von explizitem Caches
+- *Springendes* Abfragen des Caches ungünstig
 
 ###
 \footnotesize
@@ -234,7 +234,7 @@ $\rightarrow$ ``Weniger Sprünge und mehr Rechenoperationen sind gut''
 
 # Parallelität
 
-- nicht effektiv nutzbar zur berechnung einer *einzelnen* Fibonacci Zahl
+- nicht effektiv nutzbar zur Berechnung einer *einzelnen* Fibonacci Zahl
     - bei Nutzung von Cache drohen Data-Races
     - bei Iteration / Tailrecursion gibt es nur einen Pfad $\rightarrow$ keine Option zur Parallelisierung
     - (bei simpler rekursiver Variante theoretisch nutzbar)
